@@ -20,28 +20,7 @@ const seller = appData.seller
 const goods = appData.goods
 const ratings = appData.ratings
 const apiRoutes = express.Router()
-apiRoutes.get('/seller', function (req, res) {
-  res.json({
-    errno: 0,
-    data: seller
-  })
-})
-
-apiRoutes.get('/goods', function (req, res) {
-  res.json({
-    errno: 0,
-    data: goods
-  })
-})
-
-apiRoutes.get('/ratings', function (req, res) {
-  res.json({
-    errno: 0,
-    data: ratings
-  })
-})
 app.use('/api', apiRoutes)
-
 
 const devWebpackConfig = merge(baseWebpackConfig, {
   module: {
@@ -52,6 +31,29 @@ const devWebpackConfig = merge(baseWebpackConfig, {
 
   // these devServer options should be customized in /config/index.js
   devServer: {
+    before (apiRoutes) {
+      // 获取商家信息
+      apiRoutes.get('/api/seller', function (req, res) {
+        res.json({
+          errNo: 0,
+          data: seller
+        })
+      })
+      // 获取商品信息
+      apiRoutes.get('/api/goods', function (req, res) {
+        res.json({
+          errNo: 0,
+          data: goods
+        })
+      })
+      // 获取评论信息
+      apiRoutes.get('/api/ratings', function (req, res) {
+        res.json({
+          errNo: 0,
+          data: ratings
+        })
+      })
+    },
     clientLogLevel: 'warning',
     historyApiFallback: {
       rewrites: [

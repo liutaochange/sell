@@ -18,8 +18,28 @@
 
 <script>
 import Headers from 'base/header/header'
+import {getSeller} from 'api/index'
+const ERROR_OK = 0
 export default {
   name: 'index',
+  data () {
+    return {
+      seller: {}
+    }
+  },
+  created () {
+    this._getSeller()
+  },
+  methods: {
+    _getSeller () {
+      const _this = this
+      getSeller().then((res) => {
+        if (res.errNo === ERROR_OK) {
+          _this.seller = res.data
+        }
+      })
+    }
+  },
   components: {
     Headers
   }
