@@ -30,7 +30,16 @@
     <div class="bg-wamp">
       <img :src="seller.avatar" alt="banner" width="100%" height="100%">
     </div>
-    <div v-show="detailShow" class="detail-dialog"></div>
+    <div v-show="detailShow" class="detail-dialog">
+      <div class="dialog-wamp clearfix">
+        <div class="dialog-main">
+          <h1 class="name">{{seller.name}}</h1>
+        </div>
+      </div>
+      <div class="dialog-close">
+        <i class="icon-close"></i>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -186,4 +195,22 @@ export default {
       height: 100%
       overflow: auto
       background: rgba(7,17,27,.8)
+      .dialog-wamp
+        width: 100%
+        min-height: 100%
+        .dialog-main
+          margin-top: 64px
+          padding-bottom: 64px
+          .name
+            font-size: 16px
+            line-height: 16px
+            text-align: center
+      .dialog-close
+        position: relative
+        width: 32px
+        height: 32px
+        margin: -64px auto 0
+        clear: both
+        font-size: 32px
+
 </style>
