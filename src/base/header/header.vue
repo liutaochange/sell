@@ -34,9 +34,17 @@
       <div class="dialog-wamp clearfix">
         <div class="dialog-main">
           <h1 class="name">{{seller.name}}</h1>
+          <div class="star-wamp">
+            <star :size="48" :score="seller.score"></star>
+          </div>
+          <div class="title-center">
+            <div class="line"></div>
+            <div class="text">优惠信息</div>
+            <div class="line"></div>
+          </div>
         </div>
       </div>
-      <div class="dialog-close">
+      <div class="dialog-close" @click="closeDetails">
         <i class="icon-close"></i>
       </div>
     </div>
@@ -44,6 +52,7 @@
 </template>
 
 <script>
+import star from 'base/star/star'
 export default {
   name: 'headers',
   props: {
@@ -63,7 +72,13 @@ export default {
   methods: {
     showDetails () {
       this.detailShow = true
+    },
+    closeDetails () {
+      this.detailShow = false
     }
+  },
+  components: {
+    star
   }
 }
 </script>
@@ -205,6 +220,22 @@ export default {
             font-size: 16px
             line-height: 16px
             text-align: center
+          .star-wamp
+            margin-top: 18px
+            padding: 2px 0
+            text-align: center
+          .title-center
+            display: flex
+            width: 80%
+            margin: 30px auto 24px
+            .line
+              flex: 1
+              position: relative
+              top: -6px
+              border-bottom: 1px solid rgba(255,255,255,.2)
+            .text
+              padding: 0 12px
+              font-size: 14px
       .dialog-close
         position: relative
         width: 32px
