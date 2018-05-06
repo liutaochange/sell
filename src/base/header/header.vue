@@ -30,29 +30,42 @@
     <div class="bg-wamp">
       <img :src="seller.avatar" alt="banner" width="100%" height="100%">
     </div>
-    <div v-show="detailShow" class="detail-dialog">
-      <div class="dialog-wamp clearfix">
-        <div class="dialog-main">
-          <h1 class="name">{{seller.name}}</h1>
-          <div class="star-wamp">
-            <star :size="48" :score="seller.score"></star>
-          </div>
-          <div class="title-center">
-            <div class="line"></div>
-            <div class="text">优惠信息</div>
-            <div class="line"></div>
+    <transition name="fade">
+      <div v-show="detailShow" class="detail-dialog">
+        <div class="dialog-wamp clearfix">
+          <div class="dialog-main">
+            <h1 class="name">{{seller.name}}</h1>
+            <div class="star-wamp">
+              <star :size="48" :score="seller.score"></star>
+            </div>
+            <div class="title-wamp">
+              <list-title :title="firstTitle"></list-title>
+            </div>
+            <ul v-if="seller.supports" class="list-supports">
+              <li v-for="(item,index) in seller.supports" class="support-item" :key="index">
+                <span class="icon" :class="classMap[seller.supports[index].type]"></span>
+                <p class="text">{{item.description}}</p>
+              </li>
+            </ul>
+            <div class="title-wamp">
+              <list-title :title="secondTitle"></list-title>
+            </div>
+            <div class="info-wraper">
+              <p class="info-text">{{seller.bulletin}}</p>
+            </div>
           </div>
         </div>
+        <div class="dialog-close" @click="closeDetails">
+          <i class="icon-close"></i>
+        </div>
       </div>
-      <div class="dialog-close" @click="closeDetails">
-        <i class="icon-close"></i>
-      </div>
-    </div>
+    </transition>
   </div>
 </template>
 
 <script>
 import star from 'base/star/star'
+import listTitle from 'base/title/title'
 export default {
   name: 'headers',
   props: {
@@ -63,7 +76,9 @@ export default {
   },
   data () {
     return {
-      detailShow: false
+      detailShow: false,
+      firstTitle: '优惠信息',
+      secondTitle: '商家公告'
     }
   },
   created () {
@@ -78,7 +93,8 @@ export default {
     }
   },
   components: {
-    star
+    star,
+    listTitle
   }
 }
 </script>
@@ -201,6 +217,10 @@ export default {
       height: 100%
       z-index: -1
       filter: blur(10px)
+    .fade-enter-active, .fade-leave-active
+      transition: all 0.5s
+    .fade-enter, .fade-leave-to
+      opacity: 0
     .detail-dialog
       position: fixed
       top: 0
@@ -210,6 +230,7 @@ export default {
       height: 100%
       overflow: auto
       background: rgba(7,17,27,.8)
+      backdrop-filter: blur(10px)
       .dialog-wamp
         width: 100%
         min-height: 100%
@@ -224,18 +245,47 @@ export default {
             margin-top: 18px
             padding: 2px 0
             text-align: center
-          .title-center
-            display: flex
+          .title-wamp
+            width: 100%
+            margin: 28px auto 24px
+          .list-supports
             width: 80%
-            margin: 30px auto 24px
-            .line
-              flex: 1
-              position: relative
-              top: -6px
-              border-bottom: 1px solid rgba(255,255,255,.2)
-            .text
+            margin: 0 auto
+            .support-item
               padding: 0 12px
-              font-size: 14px
+              margin-bottom: 12px
+              font-size: 0
+              &:last-child
+                margin-bottom: 0
+              .icon
+                display: inline-block
+                width: 16px
+                height: 16px
+                vertical-align: top
+                margin-right: 6px
+                background-size: 16px 16px
+                background-repeat: no-repeat
+                &.decrease
+                  bg-image('decrease_2')
+                &.discount
+                  bg-image('discount_2')
+                &.guarantee
+                  bg-image('guarantee_2')
+                &.invoice
+                  bg-image('invoice_2')
+                &.special
+                  bg-image('special_2')
+              .text
+                display: inline-block
+                font-size: 12px
+                line-height: 16px
+          .info-wraper
+            width: 80%
+            margin: 0 auto
+            .info-text
+              padding: 0 12px
+              line-height: 24px
+              font-size: 12px
       .dialog-close
         position: relative
         width: 32px
