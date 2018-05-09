@@ -1,8 +1,8 @@
 <template>
   <div class="goods">
-    <div class="menu-wamp">
+    <div class="menu-wamp" ref="menu">
       <ul>
-        <li v-for="(item,index) in goods" :key="index" class="menu-item">
+        <li v-for="(item,index) in goods" :key="index" class="menu-item" :class="{'current':currentIndex == index}" @click="selectMenu(index)">
           <span class="text border-1px">
             <span v-show="item.type>0" class="icon" :class="classMap[item.type]"></span>
             {{item.name}}
@@ -10,12 +10,12 @@
         </li>
       </ul>
     </div>
-    <div class="goods-wamp">
+    <div class="goods-wamp" ref="goods">
       <ul>
         <li v-for="(item,index) in goods" :key="index" class="foods-item border-1px">
           <h1 class="title">{{item.name}}</h1>
           <ul>
-            <li v-for="(foods,i) in item.foods" class="food-item" :key="i">
+            <li v-for="(foods,i) in item.foods" class="food-item food-item-hook" :key="i">
               <div class="icon">
                 <img :src="foods.icon" alt="img" width="57" height="57">
               </div>
@@ -36,11 +36,14 @@
         </li>
       </ul>
     </div>
+    <shop-cart :deliveryPrise="seller.deliveryPrice" :minPrise="seller.minPrice" :selectGoods="selectGoods"></shop-cart>
   </div>
 </template>
 
 <script>
 import {getGoods} from 'api/index'
+import Rscroll from 'better-scroll'
+import shopCart from 'base/shopping/shopping'
 const ERROR_OK = 0
 export default {
   name: 'goods',
@@ -52,12 +55,27 @@ export default {
   },
   data () {
     return {
-      goods: []
+      goods: [],
+      itemHeight: [],
+      scrollY: 0,
+      selectGoods: []
     }
   },
   created () {
     this._getGoods()
     this.classMap = ['decrease', 'discount', 'special', 'invoice', 'guarantee']
+  },
+  computed: {
+    currentIndex () {
+      for (let i = 0; i < this.itemHeight.length; i++) {
+        let height = this.itemHeight[i]
+        let nextHeight = this.itemHeight[i + 1]
+        if (!nextHeight || (this.scrollY >= height && this.scrollY < nextHeight)) {
+          return i
+        }
+      }
+      return 0
+    }
   },
   methods: {
     _getGoods () {
@@ -65,9 +83,49 @@ export default {
       getGoods().then((res) => {
         if (res.errNo === ERROR_OK) {
           _this.goods = res.data
+          _this.$nextTick().then(function () {
+            _this._initScroll()
+            _this._linkType()
+          })
         }
       })
+    },
+    _initScroll () {
+      this.menuScroll = new Rscroll(this.$refs.menu, {
+        click: true,
+        probeType: 3
+      })
+      this.googsScroll = new Rscroll(this.$refs.goods, {
+        click: true,
+        probeType: 3
+      })
+      this.googsScroll.on('scroll', (pos) => {
+        this.scrollY = Math.abs(Math.round(pos.y))
+      })
+    },
+    _linkType () {
+      const _this = this
+      const goodsEle = _this.$refs.goods
+      const goodsList = goodsEle.getElementsByClassName('food-item-hook')
+      let height = 0
+      _this.itemHeight.push(height)
+      for (let i = 0; i < goodsList.length; i++) {
+        let item = goodsList[i]
+        height += item.clientHeight
+        _this.itemHeight.push(height)
+      }
+    },
+    selectMenu (index) {
+      console.log(index)
+      const _this = this
+      const goodsEle = _this.$refs.goods
+      const goodsList = goodsEle.getElementsByClassName('food-item-hook')
+      let el = goodsList[index]
+      this.googsScroll.scrollToElement(el, 300)
     }
+  },
+  components: {
+    shopCart
   }
 }
 </script>
@@ -91,6 +149,14 @@ export default {
         width: 56px
         line-height: 14px
         padding: 0 12px
+        &.current
+          position: relative
+          z-index: 10
+          margin-top: -1
+          background: #fff
+          font-weight: 700
+          .text
+            border-none()
         .icon
           display: inline-block
           vertical-align: top
@@ -145,7 +211,7 @@ export default {
             font-size: 14px
             color: rgb(7,17,27)
           .desc,.extra
-            line-height: 10px
+            line-height: 14px
             font-size: 10px
             color: rgb(147,153,159)
           .desc
@@ -164,4 +230,9 @@ export default {
               text-decoration: line-through
               font-size: 10px
               color: rgb(147,153,159)
+  @media screen and (max-width: 320px) {
+    .content .name{
+      font-size: 12px !important;
+    }
+  }
 </style>
