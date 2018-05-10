@@ -3,16 +3,17 @@
     <div class="content">
       <div class="item-left">
         <div class="logo-wamp">
-          <div class="logo">
-            <i class="icon-shopping_cart"></i>
+          <div class="logo" :class="{'highlight':totalCount>0}">
+            <i class="icon-shopping_cart" :class="{'highlight':totalCount>0}"></i>
           </div>
+          <div class="num" v-show="totalCount>0">{{totalCount}}</div>
         </div>
-        <div class="prise">￥ {{totalPrise}} 元</div>
+        <div class="prise" :class="{'highlight':totalPrise>0}">￥ {{totalPrise}} 元</div>
         <div class="description">另需配送费￥{{deliveryPrise}}元</div>
       </div>
       <div class="item-right">
-        <div class="pay">
-          ￥{{minPrise}}元
+        <div class="pay" :class="payClass">
+          {{payDesc}}
         </div>
       </div>
     </div>
@@ -43,6 +44,30 @@ export default {
         total += (ele.price * ele.count)
       })
       return total
+    },
+    totalCount () {
+      let count = 0
+      this.selectGoods.forEach((ele) => {
+        count += ele.count
+      })
+      return count
+    },
+    payDesc () {
+      if (this.totalPrise === 0) {
+        return `￥${this.minPrise}元起送`
+      } else if (this.totalPrise < this.minPrise) {
+        let diff = this.minPrise - this.totalPrise
+        return `还差￥${diff}元起送`
+      } else {
+        return '去结算'
+      }
+    },
+    payClass () {
+      if (this.totalPrise < this.minPrise) {
+        return 'not-enough'
+      } else {
+        return 'enough'
+      }
     }
   }
 }
@@ -80,10 +105,28 @@ export default {
             border-radius: 50%
             background: #2b343c
             text-align: center
+            &.highlight
+              background: rgb(0,160,220)
             .icon-shopping_cart
               line-height: 44px
               font-size: 24px
               color: #80858a
+              &.highlight
+                color: #fff
+          .num
+            position: absolute
+            top: 0
+            right: 0
+            width: 24px
+            height: 16px
+            line-height: 16px
+            font-size: 12px
+            text-align: center
+            font-weight: 700
+            color: #fff
+            background: rgb(240,20,20)
+            box-shadow: 0 4px 8px 0 rgba(0,0,0,.4)
+            border-radius: 10px
         .prise
           display: inline-block
           vertical-align: top
@@ -95,6 +138,8 @@ export default {
           font-size: 16px
           font-weight: 700
           color: rgba(255,255,255,.4)
+          &.highlight
+            color: #fff
         .description
           display: inline-block
           vertical-align: top
@@ -113,5 +158,9 @@ export default {
           color: rgba(255,255,255,.4)
           font-weight: 700
           font-size: 12px
-          background: #2b333b
+          &.not-enough
+            background: #2b333b
+          &.enough
+            background: #00b43c
+            color: #fff
 </style>

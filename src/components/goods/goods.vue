@@ -30,19 +30,23 @@
                   <span class="now">￥{{foods.price}}</span>
                   <span class="old" v-show="foods.oldPrie">￥{{foods.oldPrice}}</span>
                 </div>
+                <div class="cartControl-wamp">
+                  <cart-control :food="foods"></cart-control>
+                </div>
               </div>
             </li>
           </ul>
         </li>
       </ul>
     </div>
-    <shop-cart :deliveryPrise="seller.deliveryPrice" :minPrise="seller.minPrice" :selectGoods="selectGoods"></shop-cart>
+    <shop-cart :deliveryPrise="seller.deliveryPrice" :minPrise="seller.minPrice" :selectGoods="selectFoods"></shop-cart>
   </div>
 </template>
 
 <script>
 import {getGoods} from 'api/index'
 import Rscroll from 'better-scroll'
+import cartControl from 'base/control/control'
 import shopCart from 'base/shopping/shopping'
 const ERROR_OK = 0
 export default {
@@ -75,6 +79,17 @@ export default {
         }
       }
       return 0
+    },
+    selectFoods () {
+      let item = []
+      this.goods.forEach((ele) => {
+        ele.foods.forEach((food) => {
+          if (food.count) {
+            item.push(food)
+          }
+        })
+      })
+      return item
     }
   },
   methods: {
@@ -125,7 +140,8 @@ export default {
     }
   },
   components: {
-    shopCart
+    shopCart,
+    cartControl
   }
 }
 </script>
@@ -196,6 +212,7 @@ export default {
         margin: 18px
         padding-bottom: 18px
         border-1px(rgba(7,17,27,0.1))
+        position: relative
         &:last-child
           border-none()
           margin-bottom: 0
@@ -230,6 +247,10 @@ export default {
               text-decoration: line-through
               font-size: 10px
               color: rgb(147,153,159)
+          .cartControl-wamp
+            position: absolute
+            bottom: 12px
+            right: 0
   @media screen and (max-width: 320px) {
     .content .name{
       font-size: 12px !important;
