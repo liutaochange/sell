@@ -4,6 +4,7 @@ import Index from '@/components/index'
 import Goods from '@/components/goods/goods'
 import Ratings from '@/components/ratings/ratings'
 import Seller from '@/components/seller/seller'
+import Trans from '@/base/trans'
 Vue.use(Router)
 
 export default new Router({
@@ -31,6 +32,11 @@ export default new Router({
           component: Seller
         }
       ]
+    },
+    {
+      path: '/trans',
+      name: 'trans',
+      component: Trans
     }
   ]
 })

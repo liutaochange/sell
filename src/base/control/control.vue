@@ -18,12 +18,13 @@ export default {
     }
   },
   methods: {
-    addCount () {
+    addCount (event) {
       if (!this.food.count) {
         Vue.set(this.food, 'count', 1)
       } else {
         this.food.count++
       }
+      this.$emit('cartAdd', event.target)
     },
     resCount () {
       if (this.food.count > 0) {
@@ -41,12 +42,12 @@ export default {
       transition: all .4s linear
     .move-enter,.move-leave-to
       opacity: 0
-      transition: transform3d(24px,0,0)
+      transition: translate3d(24px,0,0)
       .cart-decrease
         transform: rotate(0)
     .move-enter-to,.move-leave
       opacity: 1
-      transition: transform3d(0,0,0)
+      transition: translate3d(0,0,0)
       .cart-decrease
         transform: rotateX(180deg)
     .cart-decrease,.cart-add

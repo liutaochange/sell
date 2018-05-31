@@ -31,7 +31,7 @@
                   <span class="old" v-show="foods.oldPrie">￥{{foods.oldPrice}}</span>
                 </div>
                 <div class="cartControl-wamp">
-                  <cart-control :food="foods"></cart-control>
+                  <cart-control :food="foods" v-on:cartAdd="drop"></cart-control>
                 </div>
               </div>
             </li>
@@ -39,7 +39,7 @@
         </li>
       </ul>
     </div>
-    <shop-cart :deliveryPrise="seller.deliveryPrice" :minPrise="seller.minPrice" :selectGoods="selectFoods"></shop-cart>
+    <shop-cart :deliveryPrise="seller.deliveryPrice" :minPrise="seller.minPrice" :selectGoods="selectFoods" ref="shopCart"></shop-cart>
   </div>
 </template>
 
@@ -137,6 +137,9 @@ export default {
       const goodsList = goodsEle.getElementsByClassName('food-item-hook')
       let el = goodsList[index]
       this.googsScroll.scrollToElement(el, 300)
+    },
+    drop (ele) {
+      this.$refs.shopCart.drop(ele)
     }
   },
   components: {
