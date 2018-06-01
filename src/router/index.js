@@ -1,9 +1,9 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import Index from '@/components/index'
-import Goods from '@/components/goods/goods'
-import Ratings from '@/components/ratings/ratings'
-import Seller from '@/components/seller/seller'
+const Index = () => import('@/components/index')
+const Goods = () => import('@/components/goods/goods')
+const Ratings = () => import('@/components/ratings/ratings')
+const Seller = () => import('@/components/seller/seller')
 Vue.use(Router)
 
 export default new Router({

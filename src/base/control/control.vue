@@ -1,7 +1,9 @@
 <template>
   <div class="cart-wamp">
     <transition name="move">
-      <div class="cart-decrease icon-remove_circle_outline" v-show="food.count>0" @click="resCount"></div>
+      <div class="cart-decrease" v-show="food.count>0" @click="resCount">
+        <div class="rotate icon-remove_circle_outline"></div>
+      </div>
     </transition>
     <div class="cart-count" v-show="food.count>0">{{food.count}}</div>
     <div class="cart-add icon-add_circle" @click="addCount"></div>
@@ -38,17 +40,13 @@ export default {
   .cart-wamp
     font-size: 0
     .move-enter-active,.move-leave-active
-      transition: all .4s linear
+      transition: all .3s linear
     .move-enter,.move-leave-to
       opacity: 0
-      transition: transform3d(24px,0,0)
-      .cart-decrease
-        transform: rotate(0)
+      transform: translate3d(24px,0,0) rotate(0)
     .move-enter-to,.move-leave
       opacity: 1
-      transition: transform3d(0,0,0)
-      .cart-decrease
-        transform: rotateX(180deg)
+      transform: translate3d(0,0,0) rotate(180deg)
     .cart-decrease,.cart-add
       display: inline-block
       vertical-align: top
