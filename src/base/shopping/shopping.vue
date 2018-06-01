@@ -1,6 +1,6 @@
 <template>
   <div class="shopping">
-    <div class="content">
+    <div class="content" @click="toggleList">
       <div class="item-left">
         <div class="logo-wamp">
           <div class="logo" :class="{'highlight':totalCount>0}">
@@ -18,17 +18,40 @@
       </div>
     </div>
     <div class="ball-container">
-        <transition v-for="(ball, index) in balls" v-show="ball.shows" class="ball" :key="index" name="drop"
-                    v-on:before-enter="beforeEnter"
-                    v-on:enter="enter"
-                    v-on:after-enter="afterEnter">
-          <div class="inner inner-hook"></div>
-        </transition>
+        <div v-for="(ball, index) in balls" :key="index">
+          <transition name="drop" @before-enter="beforeEnter" @enter="enter" @after-enter="afterEnter">
+            <div v-show="ball.shows" class="ball">
+              <div class="inner inner-hook"></div>
+            </div>
+          </transition>
+        </div>
     </div>
+    <transition name="fold" tag="div">
+      <div class="shopp-detail" v-show="listShow">
+        <div class="list-header">
+          <h1 class="title">购物车</h1>
+          <span class="empty">清空</span>
+        </div>
+        <div class="list-content">
+          <ul>
+            <li class="food border-1px" v-for="(item,index) in selectGoods" :key="index">
+              <span class="name">{{item.name}}</span>
+              <div class="price-wamp">
+                <span class="price">￥{{item.price*item.count}}</span>
+              </div>
+              <div class="cart-control-wamp">
+                <cart-control :food="item"></cart-control>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </transition>
   </div>
 </template>
 
 <script>
+import cartControl from 'base/control/control'
 export default {
   name: 'shopping',
   props: {
@@ -64,7 +87,8 @@ export default {
           shows: false
         }
       ],
-      dropBall: []
+      dropBall: [],
+      showFlag: false
     }
   },
   computed: {
@@ -98,9 +122,24 @@ export default {
       } else {
         return 'enough'
       }
+    },
+    listShow () {
+      const that = this
+      if (!that.totalCount) {
+        that.showFlag = true
+        return false
+      }
+      let show = !that.showFlag
+      return show
     }
   },
   methods: {
+    toggleList () {
+      if (!this.totalCount) {
+        return
+      }
+      this.showFlag = !this.showFlag
+    },
     drop (el) {
       for (let i = 0; i < this.balls.length; i++) {
         let ele = this.balls[i]
@@ -129,15 +168,16 @@ export default {
         }
       }
     },
-    enter (el) {
+    enter (el, done) {
       /* eslint-disable no-unused-vars */
-      let ref = el.offsetHeight
+      let rf = el.offsetHeight
       this.$nextTick(() => {
-        el.style.webkitTransform = `translate3d(0,0,0)`
-        el.style.transform = `translate3d(0,0,0)`
+        el.style.webkitTransform = 'translate3d(0,0,0)'
+        el.style.transform = 'translate3d(0,0,0)'
         let inner = el.getElementsByClassName('inner-hook')[0]
-        inner.style.webkitTransform = `translate3d(0,0,0)`
-        inner.style.transform = `translate3d(0,0,0)`
+        inner.style.webkitTransform = 'translate3d(0,0,0)'
+        inner.style.transform = 'translate3d(0,0,0)'
+        el.addEventListener('transitionend', done)
       })
     },
     afterEnter (el) {
@@ -147,11 +187,15 @@ export default {
         el.style.display = 'none'
       }
     }
+  },
+  components: {
+    cartControl
   }
 }
 </script>
 
 <style scoped lang="stylus">
+  @import "~common/stylus/mixin.styl"
   .shopping
     position: fixed
     left: 0
@@ -242,18 +286,70 @@ export default {
             background: #00b43c
             color: #fff
     .ball-container
+      & .drop-enter-active,& .drop-leave-active
+        transition: all 0.4s cubic-bezier(0.49,-0.29,0.75,0.41)
       .ball
         position: fixed
         left: 32px
         bottom: 22px
         z-index: 200
-        width: 16px
-        &.drop-enter-active
-          transition: all 0.4s cubic-bezier(0.49,-0.29,0.75,0.41)
-          .inner
-            width: 16px
-            height: 16px
-            border-radius: 50%
-            background: rgb(0,160,220)
-            transition: all 0.4s linner
+        .inner
+          width: 16px
+          height: 16px
+          border-radius: 50%
+          background: rgb(0,160,220)
+          transition: all 0.4s linear
+    .fold-enter-active,.fold-leave-active
+      position: relative
+      width: 100%
+      transition: all 0.5s
+      transform: translate3d(0,-100%,0)
+    .fold-enter,.fold-leave-to
+      transform: translate3d(0,0,0)
+      .shopp-detail
+        position: absolute
+        left: 0
+        top: 0
+        z-index: -1
+        width: 100%
+        .list-header
+          height: 40px
+          line-height: 40px
+          padding: 0 18px
+          background: #f3f5f7
+          border-bottom: 1px solid rgba(7,17,27,.1)
+          .title
+            float: left
+            font-size: 14px
+            color: rgb(1,17,27)
+          .empty
+            float: right
+            font-size: 12px
+            color: rgb(1,160,220)
+        .list-content
+          padding: 0 18px
+          max-height: 216px
+          background: #fff
+          overflow: hidden
+          .food
+            position: relative
+            padding: 12px 0
+            box-sizing: border-box
+            border-1px(rgba(7,17,27,.1))
+            .name
+              line-height: 24px
+              font-size: 14px
+              color: rgb(7,17,27)
+            .price-wamp
+              position: absolute
+              right: 90px
+              bottom: 12px
+              line-height: 20px
+              font-size: 14px
+              font-weight: 700
+              color: rgb(240,20,20)
+            .cart-control-wamp
+              position: absolute
+              right: 0
+              bottom: 6px
 </style>

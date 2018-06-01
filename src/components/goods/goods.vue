@@ -139,7 +139,10 @@ export default {
       this.googsScroll.scrollToElement(el, 300)
     },
     drop (ele) {
-      this.$refs.shopCart.drop(ele)
+      // 优化多个动画时卡顿，改为异步执行
+      this.$nextTick(() => {
+        this.$refs.shopCart.drop(ele)
+      })
     }
   },
   components: {
