@@ -45,7 +45,7 @@
 
 <script>
 import {getGoods} from 'api/index'
-import Rscroll from 'better-scroll'
+import Bscroll from 'better-scroll'
 import cartControl from 'base/control/control'
 import shopCart from 'base/shopping/shopping'
 const ERROR_OK = 0
@@ -106,11 +106,11 @@ export default {
       })
     },
     _initScroll () {
-      this.menuScroll = new Rscroll(this.$refs.menu, {
+      this.menuScroll = new Bscroll(this.$refs.menu, {
         click: true,
         probeType: 3
       })
-      this.googsScroll = new Rscroll(this.$refs.goods, {
+      this.googsScroll = new Bscroll(this.$refs.goods, {
         click: true,
         probeType: 3
       })

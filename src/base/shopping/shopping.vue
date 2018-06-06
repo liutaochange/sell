@@ -18,21 +18,21 @@
       </div>
     </div>
     <div class="ball-container">
-        <div v-for="(ball, index) in balls" :key="index">
-          <transition name="drop" @before-enter="beforeEnter" @enter="enter" @after-enter="afterEnter">
-            <div v-show="ball.shows" class="ball">
-              <div class="inner inner-hook"></div>
-            </div>
-          </transition>
-        </div>
+      <div v-for="(ball, index) in balls" :key="index">
+        <transition name="drop" @before-enter="beforeEnter" @enter="enter" @after-enter="afterEnter">
+          <div v-show="ball.shows" class="ball">
+            <div class="inner inner-hook"></div>
+          </div>
+        </transition>
+      </div>
     </div>
-    <transition name="fold" tag="div">
+    <transition name="fold">
       <div class="shopp-detail" v-show="listShow">
         <div class="list-header">
           <h1 class="title">购物车</h1>
-          <span class="empty">清空</span>
+          <span class="empty" @click="empty">清空</span>
         </div>
-        <div class="list-content">
+        <div class="list-content" ref="listContent">
           <ul>
             <li class="food border-1px" v-for="(item,index) in selectGoods" :key="index">
               <span class="name">{{item.name}}</span>
@@ -47,10 +47,14 @@
         </div>
       </div>
     </transition>
+    <transition name="fade">
+      <div class="list-mark" v-show="showFlag"></div>
+    </transition>
   </div>
 </template>
 
 <script>
+import Bscroll from 'better-scroll'
 import cartControl from 'base/control/control'
 export default {
   name: 'shopping',
@@ -130,10 +134,30 @@ export default {
         return false
       }
       let show = !that.showFlag
+      if (show) {
+        that.$nextTick(() => {
+          that._initScroll()
+        })
+      }
       return show
     }
   },
   methods: {
+    empty () {
+      this.selectGoods.forEach((food) => {
+        food.count = 0
+      })
+    },
+    _initScroll () {
+      if (!this.scroll) {
+        this.Scroll = new Bscroll(this.$refs.listContent, {
+          click: true,
+          probeType: 3
+        })
+      } else {
+        this.Scroll.refresh()
+      }
+    },
     toggleList () {
       if (!this.totalCount) {
         return
@@ -299,57 +323,77 @@ export default {
           border-radius: 50%
           background: rgb(0,160,220)
           transition: all 0.4s linear
-    .fold-enter-active,.fold-leave-active
-      position: relative
+    .shopp-detail
+      position: absolute
+      left: 0
+      top: 0
+      z-index: -1
       width: 100%
-      transition: all 0.5s
       transform: translate3d(0,-100%,0)
-    .fold-enter,.fold-leave-to
-      transform: translate3d(0,0,0)
-      .shopp-detail
-        position: absolute
-        left: 0
-        top: 0
-        z-index: -1
-        width: 100%
-        .list-header
-          height: 40px
-          line-height: 40px
-          padding: 0 18px
-          background: #f3f5f7
-          border-bottom: 1px solid rgba(7,17,27,.1)
-          .title
-            float: left
+      &.fold-enter-active
+        transition: all 0.5s
+      &.fold-leave-active
+        transition: all 0.5s
+        transform:translate3d(0,-100%,0)
+      &.fold-enter,&.fold-leave-active
+        transform:translate3d(0,0,0)
+      .list-header
+        height: 40px
+        line-height: 40px
+        padding: 0 18px
+        background: #f3f5f7
+        border-bottom: 1px solid rgba(7,17,27,.1)
+        .title
+          float: left
+          font-size: 14px
+          color: rgb(1,17,27)
+        .empty
+          float: right
+          font-size: 12px
+          color: rgb(1,160,220)
+      .list-content
+        padding: 0 18px
+        max-height: 216px
+        background: #fff
+        overflow: hidden
+        .food
+          position: relative
+          padding: 12px 0
+          box-sizing: border-box
+          border-1px(rgba(7,17,27,.1))
+          .name
+            line-height: 24px
             font-size: 14px
-            color: rgb(1,17,27)
-          .empty
-            float: right
-            font-size: 12px
-            color: rgb(1,160,220)
-        .list-content
-          padding: 0 18px
-          max-height: 216px
-          background: #fff
-          overflow: hidden
-          .food
-            position: relative
-            padding: 12px 0
-            box-sizing: border-box
-            border-1px(rgba(7,17,27,.1))
-            .name
-              line-height: 24px
-              font-size: 14px
-              color: rgb(7,17,27)
-            .price-wamp
-              position: absolute
-              right: 90px
-              bottom: 12px
-              line-height: 20px
-              font-size: 14px
-              font-weight: 700
-              color: rgb(240,20,20)
-            .cart-control-wamp
-              position: absolute
-              right: 0
-              bottom: 6px
+            color: rgb(7,17,27)
+          .price-wamp
+            position: absolute
+            right: 90px
+            bottom: 12px
+            line-height: 20px
+            font-size: 14px
+            font-weight: 700
+            color: rgb(240,20,20)
+          .cart-control-wamp
+            position: absolute
+            right: 0
+            bottom: 6px
+    .list-mark
+      position: fixed
+      left: 0
+      right: 0
+      top: 0
+      bottom: 0
+      width: 100%
+      height: 100%
+      z-index: 40
+      backdrop-filter: blur(10px)
+      -webkit-backdrop-filter: blur(10px)
+      &.fade-enter-active,&.fade-leave-active
+        transition:all 0.5s
+      &.fade-enter-active
+        opacity: 1
+        background: rgba(7,17,27,.6)
+      &.fade-leave-active
+        opacity: 0
+        background: rgba(7,17,27,0)
 </style>
