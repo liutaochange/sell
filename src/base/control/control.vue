@@ -1,12 +1,12 @@
 <template>
   <div class="cart-wamp">
     <transition name="move">
-      <div class="cart-decrease" v-show="food.count>0" @click="resCount">
+      <div class="cart-decrease" v-show="food.count>0" @click.stop.prevent="resCount">
         <div class="rotate icon-remove_circle_outline"></div>
       </div>
     </transition>
     <div class="cart-count" v-show="food.count>0">{{food.count}}</div>
-    <div class="cart-add icon-add_circle" @click.stop="addCount"></div>
+    <div class="cart-add icon-add_circle" @click.stop.prevent="addCount"></div>
   </div>
 </template>
 
@@ -26,6 +26,7 @@ export default {
       } else {
         this.food.count++
       }
+      console.log(this.food.count)
       this.$emit('cartAdd', event.target)
     },
     resCount () {

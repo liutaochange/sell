@@ -15,7 +15,7 @@
         <li v-for="(item,index) in goods" :key="index" class="foods-item border-1px">
           <h1 class="title">{{item.name}}</h1>
           <ul>
-            <li v-for="(foods,i) in item.foods" class="food-item food-item-hook" :key="i">
+            <li v-for="(foods,i) in item.foods" class="food-item food-item-hook" :key="i" @click="selectFoodItem(foods)">
               <div class="icon">
                 <img :src="foods.icon" alt="img" width="57" height="57">
               </div>
@@ -31,7 +31,7 @@
                   <span class="old" v-show="foods.oldPrie">￥{{foods.oldPrice}}</span>
                 </div>
                 <div class="cartControl-wamp">
-                  <cart-control :food="foods" v-on:cartAdd="drop"></cart-control>
+                  <cart-control :food="foods" @cartAdd="drop"></cart-control>
                 </div>
               </div>
             </li>
@@ -40,6 +40,9 @@
       </ul>
     </div>
     <shop-cart :deliveryPrise="seller.deliveryPrice" :minPrise="seller.minPrice" :selectGoods="selectFoods" ref="shopCart"></shop-cart>
+    <transition name="move">
+      <food :food="selectedFoot" ref="food" @cartAdd="drop"></food>
+    </transition>
   </div>
 </template>
 
@@ -48,6 +51,7 @@ import {getGoods} from 'api/index'
 import Bscroll from 'better-scroll'
 import cartControl from 'base/control/control'
 import shopCart from 'base/shopping/shopping'
+import food from 'components/food/food'
 const ERROR_OK = 0
 export default {
   name: 'goods',
@@ -62,7 +66,8 @@ export default {
       goods: [],
       itemHeight: [],
       scrollY: 0,
-      selectGoods: []
+      selectGoods: [],
+      selectedFoot: {}
     }
   },
   created () {
@@ -143,11 +148,16 @@ export default {
       this.$nextTick(() => {
         this.$refs.shopCart.drop(ele)
       })
+    },
+    selectFoodItem (foods) {
+      this.selectedFoot = foods
+      this.$refs.food.show()
     }
   },
   components: {
     shopCart,
-    cartControl
+    cartControl,
+    food
   }
 }
 </script>

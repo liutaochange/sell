@@ -48,7 +48,7 @@
       </div>
     </transition>
     <transition name="fade">
-      <div class="list-mark" v-show="showFlag"></div>
+      <div class="list-mark" v-show="listShow"></div>
     </transition>
   </div>
 </template>
@@ -385,15 +385,15 @@ export default {
       bottom: 0
       width: 100%
       height: 100%
-      z-index: 40
+      z-index: -2
+      filter: blur(10px)
       backdrop-filter: blur(10px)
       -webkit-backdrop-filter: blur(10px)
+      background: rgba(7,17,27,.6)
       &.fade-enter-active,&.fade-leave-active
         transition:all 0.5s
-      &.fade-enter-active
+      &.fade-enter
         opacity: 1
-        background: rgba(7,17,27,.6)
       &.fade-leave-active
         opacity: 0
-        background: rgba(7,17,27,0)
 </style>
