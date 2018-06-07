@@ -97,9 +97,8 @@ export default {
     },
     addFirst (event) {
       if (!event._constructed) {
-        return
+        return false
       }
-      console.log('加入购物车')
       this.$emit('cartAdd', event.target)
       Vue.set(this.food, 'count', 1)
     },

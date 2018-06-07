@@ -21,6 +21,9 @@ export default {
   },
   methods: {
     addCount (event) {
+      if (!event._constructed) {
+        return false
+      }
       if (!this.food.count) {
         Vue.set(this.food, 'count', 1)
       } else {

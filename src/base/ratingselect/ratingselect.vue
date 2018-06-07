@@ -64,10 +64,7 @@ export default {
     }
   },
   methods: {
-    select (type, event) {
-      if (!event._constructed) {
-        return
-      }
+    select (type) {
       this.type = type
       this.$emit('selRatings', type)
     },

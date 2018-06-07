@@ -16,3 +16,10 @@ export const getGoods = () => {
     return Promise.resolve(res.data)
   })
 }
+// 获取评论信息
+export const getRatings = () => {
+  const url = '/api/ratings'
+  return request.get(url).then(res => {
+    return Promise.resolve(res.data)
+  })
+}
