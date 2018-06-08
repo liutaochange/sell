@@ -93,6 +93,7 @@ export default {
           }
         })
       })
+      console.log(item)
       return item
     }
   },

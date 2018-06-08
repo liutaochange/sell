@@ -18,13 +18,19 @@
 
 <script>
 import Headers from 'base/header/header'
-import {getSeller} from 'api/index'
+import { getSeller } from 'api/index'
+import { urlParse } from 'common/js/util'
 const ERROR_OK = 0
 export default {
   name: 'index',
   data () {
     return {
-      seller: {}
+      seller: {
+        id: (() => {
+          let queryParam = urlParse()
+          return queryParam.id
+        })()
+      }
     }
   },
   created () {
@@ -35,7 +41,7 @@ export default {
       const _this = this
       getSeller().then((res) => {
         if (res.errNo === ERROR_OK) {
-          _this.seller = res.data
+          _this.seller = Object.assign({}, _this.seller, res.data)
         }
       })
     }

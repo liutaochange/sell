@@ -48,7 +48,7 @@
       </div>
     </transition>
     <transition name="fade">
-      <div class="list-mark" v-show="listShow"></div>
+      <div class="list-mark" v-show="listShow" @click="hideList"></div>
     </transition>
   </div>
 </template>
@@ -163,6 +163,9 @@ export default {
         return
       }
       this.showFlag = !this.showFlag
+    },
+    hideList () {
+      this.showFlag = true
     },
     addFood (target) {
       this.drop(target)

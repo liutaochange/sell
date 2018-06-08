@@ -1,7 +1,7 @@
 <template>
   <div @click.stop>
     <transition name="slide">
-      <div v-show="showFlag" class="good-detail" ref="listWamp">
+      <div v-if="showFlag" class="good-detail" ref="listWamp">
         <div class="food-content">
           <div class="image-header">
             <img :src="food.image">
