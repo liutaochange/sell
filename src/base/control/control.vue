@@ -22,7 +22,7 @@ export default {
   methods: {
     addCount (event) {
       if (!event._constructed) {
-        return false
+        return
       }
       if (!this.food.count) {
         Vue.set(this.food, 'count', 1)
@@ -33,6 +33,9 @@ export default {
       this.$emit('cartAdd', event.target)
     },
     resCount () {
+      if (!event._constructed) {
+        return
+      }
       if (this.food.count > 0) {
         this.food.count--
       }

@@ -2,7 +2,7 @@
   <div class="goods">
     <div class="menu-wamp" ref="menu">
       <ul>
-        <li v-for="(item,index) in goods" :key="index" class="menu-item" :class="{'current':currentIndex == index}" @click="selectMenu(index)">
+        <li v-for="(item,index) in goods" :key="index" class="menu-item" :class="{'current':currentIndex == index}" @click="selectMenu(index,$event)">
           <span class="text border-1px">
             <span v-show="item.type>0" class="icon" :class="classMap[item.type]"></span>
             {{item.name}}
@@ -12,10 +12,10 @@
     </div>
     <div class="goods-wamp" ref="goods">
       <ul>
-        <li v-for="(item,index) in goods" :key="index" class="foods-item border-1px">
+        <li v-for="(item,index) in goods" :key="index" class="foods-item food-item-hook">
           <h1 class="title">{{item.name}}</h1>
           <ul>
-            <li v-for="(foods,i) in item.foods" class="food-item food-item-hook" :key="i" @click="selectFoodItem(foods)">
+            <li v-for="(foods,i) in item.foods" class="food-item border-1px" :key="i" @click="selectFoodItem(foods,$event)">
               <div class="icon">
                 <img :src="foods.icon" alt="img" width="57" height="57">
               </div>
@@ -66,7 +66,6 @@ export default {
       goods: [],
       itemHeight: [],
       scrollY: 0,
-      selectGoods: [],
       selectedFoot: {}
     }
   },
@@ -112,8 +111,7 @@ export default {
     },
     _initScroll () {
       this.menuScroll = new Bscroll(this.$refs.menu, {
-        click: true,
-        probeType: 3
+        click: true
       })
       this.googsScroll = new Bscroll(this.$refs.goods, {
         click: true,
@@ -135,8 +133,10 @@ export default {
         _this.itemHeight.push(height)
       }
     },
-    selectMenu (index) {
-      console.log(index)
+    selectMenu (index, event) {
+      if (!event._constructed) {
+        return
+      }
       const _this = this
       const goodsEle = _this.$refs.goods
       const goodsList = goodsEle.getElementsByClassName('food-item-hook')
@@ -149,7 +149,10 @@ export default {
         this.$refs.shopCart.drop(ele)
       })
     },
-    selectFoodItem (foods) {
+    selectFoodItem (foods, event) {
+      if (!event._constructed) {
+        return
+      }
       this.selectedFoot = foods
       this.$refs.food.show()
     }

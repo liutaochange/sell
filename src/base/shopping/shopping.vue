@@ -40,7 +40,7 @@
                 <span class="price">￥{{item.price*item.count}}</span>
               </div>
               <div class="cart-control-wamp">
-                <cart-control :food="item"></cart-control>
+                <cart-control :food="item" @cartAdd="addFood"></cart-control>
               </div>
             </li>
           </ul>
@@ -163,6 +163,9 @@ export default {
         return
       }
       this.showFlag = !this.showFlag
+    },
+    addFood (target) {
+      this.drop(target)
     },
     drop (el) {
       for (let i = 0; i < this.balls.length; i++) {
