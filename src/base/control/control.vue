@@ -11,7 +11,6 @@
 </template>
 
 <script>
-import Vue from 'vue'
 export default {
   props: {
     food: {
@@ -25,7 +24,7 @@ export default {
         return false
       }
       if (!this.food.count) {
-        Vue.set(this.food, 'count', 1)
+        this.$set(this.food, 'count', 1)
       } else {
         this.food.count++
       }

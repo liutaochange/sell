@@ -34,7 +34,7 @@
         </div>
         <div class="list-content" ref="listContent">
           <ul>
-            <li class="food border-1px" v-for="(item,index) in selectGoods" :key="index">
+            <li class="food border-1px" v-for="item in selectGoods" :key="item.name">
               <span class="name">{{item.name}}</span>
               <div class="price-wamp">
                 <span class="price">￥{{item.price*item.count}}</span>
@@ -57,7 +57,6 @@
 import Bscroll from 'better-scroll'
 import cartControl from 'base/control/control'
 export default {
-  name: 'shopping',
   props: {
     selectGoods: {
       type: Array,

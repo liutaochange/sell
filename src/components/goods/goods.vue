@@ -54,7 +54,6 @@ import shopCart from 'base/shopping/shopping'
 import food from 'components/food/food'
 const ERROR_OK = 0
 export default {
-  name: 'goods',
   props: {
     seller: {
       type: Object,
@@ -93,7 +92,6 @@ export default {
           }
         })
       })
-      console.log(item)
       return item
     }
   },

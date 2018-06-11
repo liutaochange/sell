@@ -62,10 +62,8 @@ import cartControl from 'base/control/control'
 import split from 'base/split/split'
 import ratingselect from 'base/ratingselect/ratingselect'
 import { formatDate } from 'common/js/date'
-import Vue from 'vue'
 const ALL = 2
 export default {
-  name: 'good-details',
   props: {
     food: {
       type: Object,
@@ -100,7 +98,7 @@ export default {
         return false
       }
       this.$emit('cartAdd', event.target)
-      Vue.set(this.food, 'count', 1)
+      this.$set(this.food, 'count', 1)
     },
     show () {
       this.showFlag = true
