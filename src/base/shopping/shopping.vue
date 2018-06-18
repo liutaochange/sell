@@ -27,20 +27,20 @@
       </div>
     </div>
     <transition name="fold">
-      <div class="shopp-detail" v-show="listShow">
+      <div class="shopp-detail" v-show="listShow" @click.stop.prevent>
         <div class="list-header">
           <h1 class="title">购物车</h1>
           <span class="empty" @click="empty">清空</span>
         </div>
-        <div class="list-content" ref="listContent">
+        <div class="list-content" ref="listContentWamp">
           <ul>
-            <li class="food border-1px" v-for="item in selectGoods" :key="item.name">
-              <span class="name">{{item.name}}</span>
+            <li class="food border-1px" v-for="(food,index) in selectGoods" :key="index">
+              <span class="name">{{food.name}}</span>
               <div class="price-wamp">
-                <span class="price">￥{{item.price*item.count}}</span>
+                <span class="price">￥{{food.price*food.count}}</span>
               </div>
-              <div class="cart-control-wamp">
-                <cart-control :food="item" @cartAdd="addFood"></cart-control>
+              <div class="cart-control-wamp" @click.stop.prevent>
+                <cart-control :food="food" @cartAdd="addFood"></cart-control>
               </div>
             </li>
           </ul>
@@ -60,7 +60,12 @@ export default {
   props: {
     selectGoods: {
       type: Array,
-      default: () => []
+      default: () => [
+        {
+          price: 10,
+          count: 1
+        }
+      ]
     },
     minPrise: {
       type: Number,
@@ -149,9 +154,8 @@ export default {
     },
     _initScroll () {
       if (!this.scroll) {
-        this.Scroll = new Bscroll(this.$refs.listContent, {
-          click: true,
-          probeType: 3
+        this.Scroll = new Bscroll(this.$refs.listContentWamp, {
+          click: true
         })
       } else {
         this.Scroll.refresh()
