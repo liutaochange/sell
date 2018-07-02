@@ -56,6 +56,7 @@
 <script>
 import Bscroll from 'better-scroll'
 import cartControl from 'base/control/control'
+import { mapMutations } from 'vuex'
 export default {
   props: {
     selectGoods: {
@@ -148,9 +149,7 @@ export default {
   },
   methods: {
     empty () {
-      this.selectGoods.forEach((food) => {
-        food.count = 0
-      })
+      this.clearGoodsList()
     },
     _initScroll () {
       if (!this.scroll) {
@@ -219,7 +218,10 @@ export default {
         ball.shows = false
         el.style.display = 'none'
       }
-    }
+    },
+    ...mapMutations([
+      'clearGoodsList'
+    ])
   },
   components: {
     cartControl

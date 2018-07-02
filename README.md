@@ -13,7 +13,7 @@
 
 - 本项目是参考视频教程编写的，教程地址 [ Vue.js 高仿饿了么外卖APP ](https://coding.imooc.com/class/74.html)
 - 教程讲师黄轶老师的Github地址 [HuangYi](https://github.com/ustbhuangyi)
-- 项目构建的技术栈 vue axios vue-router better-scroll
+- 项目构建的技术栈 vue axios vue-router vuex better-scroll
 - 视频教程中使用的vue是1.x的版本，本项目使用的是2.5.2的版本，所以会有不同
 
 ### Build Setup

@@ -22,7 +22,7 @@
               <cart-control :food="food" @cartAdd="addAnimation"></cart-control>
             </div>
             <transition name="fade">
-              <div @click.stop.prevent="addFirst" class="buy" v-show="!food.count || food.count===0">加入购物车</div>
+              <div @click.stop.prevent="addFirst" class="buy" v-show="!showFlagAction">加入购物车</div>
             </transition>
           </div>
           <split v-show="food.info"></split>
@@ -59,6 +59,7 @@
 <script>
 import Bscroll from 'better-scroll'
 import cartControl from 'base/control/control'
+import { mapMutations, mapGetters } from 'vuex'
 import split from 'base/split/split'
 import ratingselect from 'base/ratingselect/ratingselect'
 import { formatDate } from 'common/js/date'
@@ -82,6 +83,23 @@ export default {
       }
     }
   },
+  computed: {
+    showFlagAction () {
+      let currentIndex = this.getGoodsList.indexOf(this.food)
+      if (currentIndex >= 0) {
+        if (this.getGoodsList[currentIndex].count > 0) {
+          return true
+        } else {
+          return false
+        }
+      } else {
+        return false
+      }
+    },
+    ...mapGetters([
+      'getGoodsList'
+    ])
+  },
   methods: {
     _initScroll () {
       if (!this.scroll) {
@@ -98,7 +116,7 @@ export default {
         return false
       }
       this.$emit('cartAdd', event.target)
-      this.$set(this.food, 'count', 1)
+      this.addCountMap(this.food)
     },
     show () {
       this.showFlag = true
@@ -135,7 +153,10 @@ export default {
     },
     addAnimation (target) {
       this.$emit('cartAdd', target)
-    }
+    },
+    ...mapMutations([
+      'addCountMap'
+    ])
   },
   components: {
     cartControl,

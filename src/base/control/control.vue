@@ -1,16 +1,17 @@
 <template>
   <div class="cart-wamp">
     <transition name="move">
-      <div class="cart-decrease" v-show="food.count>0" @click.stop.prevent="resCount">
+      <div class="cart-decrease" v-show="showFlag" @click.stop.prevent="resCount">
         <div class="rotate icon-remove_circle_outline"></div>
       </div>
     </transition>
-    <div class="cart-count" v-show="food.count>0">{{food.count}}</div>
+    <div class="cart-count" v-show="showFlag">{{food.count}}</div>
     <div class="cart-add icon-add_circle" @click.stop.prevent="addCount"></div>
   </div>
 </template>
 
 <script>
+import { mapMutations, mapGetters } from 'vuex'
 export default {
   props: {
     food: {
@@ -18,26 +19,41 @@ export default {
       default: () => {}
     }
   },
+  computed: {
+    showFlag () {
+      let currentIndex = this.getGoodsList.indexOf(this.food)
+      if (currentIndex >= 0) {
+        if (this.getGoodsList[currentIndex].count > 0) {
+          return true
+        } else {
+          return false
+        }
+      } else {
+        return false
+      }
+    },
+    ...mapGetters([
+      'getGoodsList'
+    ])
+  },
   methods: {
     addCount (event) {
       if (!event._constructed) {
         return false
       }
-      if (!this.food.count) {
-        this.$set(this.food, 'count', 1)
-      } else {
-        this.food.count++
-      }
+      this.addCountMap(this.food)
       this.$emit('cartAdd', event.target)
     },
     resCount (event) {
       if (!event._constructed) {
         return false
       }
-      if (this.food.count > 0) {
-        this.food.count--
-      }
-    }
+      this.reduceCountMap(this.food)
+    },
+    ...mapMutations([
+      'addCountMap',
+      'reduceCountMap'
+    ])
   }
 }
 </script>
@@ -62,6 +78,7 @@ export default {
       font-size: 24px
       padding: 6px
       color: rgb(0,160,220)
+      cursor: pointer
     .cart-count
       display: inline-block
       vertical-align: top

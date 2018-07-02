@@ -39,7 +39,7 @@
         </li>
       </ul>
     </div>
-    <shop-cart :deliveryPrise="seller.deliveryPrice" :minPrise="seller.minPrice" :selectGoods="selectFoods" ref="shopCart"></shop-cart>
+    <shop-cart :deliveryPrise="seller.deliveryPrice" :minPrise="seller.minPrice" :selectGoods="getGoodsList" ref="shopCart"></shop-cart>
     <transition name="move">
       <food :food="selectedFoot" ref="food" @cartAdd="drop"></food>
     </transition>
@@ -49,6 +49,7 @@
 <script>
 import {getGoods} from 'api/index'
 import Bscroll from 'better-scroll'
+import { mapGetters } from 'vuex'
 import cartControl from 'base/control/control'
 import shopCart from 'base/shopping/shopping'
 import food from 'components/food/food'
@@ -83,17 +84,9 @@ export default {
       }
       return 0
     },
-    selectFoods () {
-      let item = []
-      this.goods.forEach((ele) => {
-        ele.foods.forEach((food) => {
-          if (food.count) {
-            item.push(food)
-          }
-        })
-      })
-      return item
-    }
+    ...mapGetters([
+      'getGoodsList'
+    ])
   },
   methods: {
     _getGoods () {
